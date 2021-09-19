@@ -6,6 +6,7 @@
     "@types/node": "^16.9.3",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "firebase": "^9.0.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
@@ -14,6 +15,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "dev": "BROWSER=none npm start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
