@@ -1,4 +1,8 @@
 export const devlog = (message?: any, ...optionalParams: any[]): void => {
   if (process.env.NODE_ENV === 'production') return;
-  console.log(message, optionalParams);
+  if (optionalParams.length === 0) {
+    console.log(message);
+  } else {
+    console.log(message, optionalParams);
+  }
 };

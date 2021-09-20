@@ -1,12 +1,8 @@
 import React from 'react';
-import { initializeApp } from 'firebase/app';
 import { getAuth, signOut } from 'firebase/auth';
 import { Button, ButtonProps } from '@mui/material';
 
-import firebaseConfig from '../firebase.config';
 import { devlog } from '../utils/logger';
-
-initializeApp(firebaseConfig);
 
 const auth = getAuth();
 

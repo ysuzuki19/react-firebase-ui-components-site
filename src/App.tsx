@@ -1,26 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { initializeApp } from 'firebase/app';
 import { getAnalytics, logEvent } from 'firebase/analytics';
-import { getAuth, onAuthStateChanged } from '@firebase/auth';
+import {
+  getAuth,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  UserCredential,
+} from '@firebase/auth';
 
-import firebaseConfig from './firebase.config';
+import { firebase_app } from './utils/firebase_app';
 import GoogleSignInButton from './components/GoogleSignInButton';
 import SignOutButton from './components/SignOutButton';
+import { devlog } from './utils/logger';
 
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+const analytics = getAnalytics(firebase_app);
 const auth = getAuth();
 
 const App = (): JSX.Element => {
   // const [uid, setUid] = useState<string>();
-  const [uname, setUname] = useState<string>();
+  const [uname, setUname] = useState<string>(
+    auth.currentUser?.displayName || ''
+  );
 
   useEffect(() => {
     logEvent(analytics, 'visit_app');
   }, []);
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         // setUid(user.uid);
         setUname(user.displayName!);
@@ -28,18 +34,39 @@ const App = (): JSX.Element => {
         setUname('');
       }
     });
+    return unsubscribe;
   }, []);
+
+  const handlePreSignIn = () => {
+    devlog('pre');
+    // return true;
+  };
+
+  const handlePostSignIn = (result: UserCredential) => {
+    devlog('post');
+
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    const token = credential?.accessToken;
+    const user = result.user;
+    devlog(result);
+    devlog('Credential', credential);
+    devlog('Token', token);
+    devlog('User', user);
+  };
 
   return (
     <>
       <h1>React Firebase ui-components site</h1>
       <div>
-        username: <span>{uname}</span>
+        name: <span>{uname}</span>
       </div>
-      {uname?.length === 0 ? (
-        <GoogleSignInButton />
-      ) : (
+      {uname?.length !== 0 ? (
         <SignOutButton variant="contained" />
+      ) : (
+        <GoogleSignInButton
+          preSignIn={handlePreSignIn}
+          postSignIn={handlePostSignIn}
+        />
       )}
     </>
   );

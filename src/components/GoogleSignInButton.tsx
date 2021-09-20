@@ -1,78 +1,85 @@
 import React, { useEffect, useState } from 'react';
-import { initializeApp } from 'firebase/app';
 import {
   getAuth,
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithPopup,
+  UserCredential,
 } from 'firebase/auth';
 
+// Download from https://developers.google.com/identity/branding-guidelines
 import googlesignin_normal from '../images/google_signin_normal.png';
 import googlesignin_focus from '../images/google_signin_focus.png';
 import googlesignin_pressed from '../images/google_signin_pressed.png';
 import googlesignin_disabled from '../images/google_signin_disabled.png';
 
-import firebaseConfig from '../firebase.config';
+import '../utils/firebase_app'; // for using new GoogleAuthProvider()
 import { devlog } from '../utils/logger';
-
-initializeApp(firebaseConfig);
 
 const provider = new GoogleAuthProvider();
 const auth = getAuth();
 
-const GoogleSignInButton = React.memo(() => {
-  const [image, setImage] = useState(googlesignin_normal);
-  const [loggedIn, setLoggedIn] = useState<boolean>(false);
+interface GoogleSignInButtonProps {
+  preSignIn?: () => boolean | void;
+  postSignIn?: (result: UserCredential) => void;
+  width?: string | number | undefined;
+}
 
-  const handleMouseOver = () => {
-    if (loggedIn) return;
-    setImage(googlesignin_focus);
-  };
-  const handleMouseOut = () => {
-    if (loggedIn) return;
-    setImage(googlesignin_normal);
-  };
+const GoogleSignInButton = React.memo(
+  ({
+    preSignIn = () => {},
+    postSignIn = () => {},
+    width = '150px',
+  }: GoogleSignInButtonProps) => {
+    const [image, setImage] = useState(googlesignin_normal);
+    const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setLoggedIn(true);
-        setImage(googlesignin_disabled);
-      } else {
-        setLoggedIn(false);
-      }
-    });
-  }, []);
+    const handleMouseOver = () => {
+      if (loggedIn) return;
+      setImage(googlesignin_focus);
+    };
 
-  const handleClick = () => {
-    if (loggedIn) return;
-    setImage(googlesignin_pressed);
+    const handleMouseOut = () => {
+      if (loggedIn) return;
+      setImage(googlesignin_normal);
+    };
 
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential?.accessToken;
-        const user = result.user;
-        devlog(result);
-        devlog('Credential', credential);
-        devlog('Token', token);
-        devlog('User', user);
-      })
-      .catch((err) => {
-        console.log(err.code, err.message);
+    useEffect(() => {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          setLoggedIn(true);
+          setImage(googlesignin_disabled);
+        } else {
+          setLoggedIn(false);
+        }
       });
-  };
+      return unsubscribe;
+    }, []);
 
-  return (
-    <img
-      src={image}
-      alt="google signin"
-      width="150px"
-      onMouseOver={handleMouseOver}
-      onMouseOut={handleMouseOut}
-      onClick={handleClick}
-    />
-  );
-});
+    const handleClick = () => {
+      if (loggedIn) return;
+      if (preSignIn()) return;
+
+      setImage(googlesignin_pressed);
+
+      signInWithPopup(auth, provider)
+        .then((result) => postSignIn(result))
+        .catch((err) => {
+          devlog('SignIn Error: ', err);
+        });
+    };
+
+    return (
+      <img
+        src={image}
+        alt="google signin"
+        width={width}
+        onMouseOver={handleMouseOver}
+        onMouseOut={handleMouseOut}
+        onClick={handleClick}
+      />
+    );
+  }
+);
 
 export default GoogleSignInButton;
