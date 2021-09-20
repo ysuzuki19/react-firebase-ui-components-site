@@ -5,6 +5,7 @@ import { getAuth, onAuthStateChanged } from '@firebase/auth';
 
 import firebaseConfig from './firebase.config';
 import GoogleSignInButton from './components/GoogleSignInButton';
+import SignOutButton from './components/SignOutButton';
 
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
@@ -23,6 +24,8 @@ const App = (): JSX.Element => {
       if (user) {
         // setUid(user.uid);
         setUname(user.displayName!);
+      } else {
+        setUname('');
       }
     });
   }, []);
@@ -33,7 +36,11 @@ const App = (): JSX.Element => {
       <div>
         username: <span>{uname}</span>
       </div>
-      <GoogleSignInButton />
+      {uname?.length === 0 ? (
+        <GoogleSignInButton />
+      ) : (
+        <SignOutButton variant="contained" />
+      )}
     </>
   );
 };

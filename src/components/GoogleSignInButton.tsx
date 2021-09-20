@@ -13,6 +13,7 @@ import googlesignin_pressed from '../images/google_signin_pressed.png';
 import googlesignin_disabled from '../images/google_signin_disabled.png';
 
 import firebaseConfig from '../firebase.config';
+import { devlog } from '../utils/logger';
 
 initializeApp(firebaseConfig);
 
@@ -20,7 +21,7 @@ const provider = new GoogleAuthProvider();
 const auth = getAuth();
 
 const GoogleSignInButton = React.memo(() => {
-  const [image, setImage] = useState(googlesignin_disabled);
+  const [image, setImage] = useState(googlesignin_normal);
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
   const handleMouseOver = () => {
@@ -52,10 +53,10 @@ const GoogleSignInButton = React.memo(() => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential?.accessToken;
         const user = result.user;
-        console.log(result);
-        console.log('Credential', credential);
-        console.log('Token', token);
-        console.log('User', user);
+        devlog(result);
+        devlog('Credential', credential);
+        devlog('Token', token);
+        devlog('User', user);
       })
       .catch((err) => {
         console.log(err.code, err.message);
