@@ -9,7 +9,7 @@ import {
   setPersistence,
 } from 'firebase/auth';
 
-// Download from https://developers.google.com/identity/branding-guidelines
+// Downloaded from https://developers.google.com/identity/branding-guidelines
 import googlesignin_normal from '../images/google_signin_normal.png';
 import googlesignin_focus from '../images/google_signin_focus.png';
 import googlesignin_pressed from '../images/google_signin_pressed.png';

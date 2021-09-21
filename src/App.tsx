@@ -10,8 +10,8 @@ import {
 import { firebase_app } from './utils/firebase_app';
 import GoogleSignInButton from './components/GoogleSignInButton';
 import SignOutButton from './components/SignOutButton';
-import { devlog } from './utils/logger';
 import WithAuth from './components/WithAuth';
+import { devlog } from './utils/logger';
 
 const analytics = getAnalytics(firebase_app);
 const auth = getAuth();
@@ -57,24 +57,20 @@ const App = (): JSX.Element => {
   };
 
   return (
-    <>
-      <WithAuth auth={auth}>
-        <>
-          <h1>React Firebase ui-components site</h1>
-          <div>
-            name: <span>{uname}</span>
-          </div>
-          {uname?.length !== 0 ? (
-            <SignOutButton variant="contained" />
-          ) : (
-            <GoogleSignInButton
-              preSignIn={handlePreSignIn}
-              postSignIn={handlePostSignIn}
-            />
-          )}
-        </>
-      </WithAuth>
-    </>
+    <WithAuth auth={auth}>
+      <h1>React Firebase ui-components site</h1>
+      <div>
+        name: <span>{uname}</span>
+      </div>
+      {uname?.length !== 0 ? (
+        <SignOutButton auth={auth} variant="contained" />
+      ) : (
+        <GoogleSignInButton
+          preSignIn={handlePreSignIn}
+          postSignIn={handlePostSignIn}
+        />
+      )}
+    </WithAuth>
   );
 };
 

@@ -1,29 +1,33 @@
 import React from 'react';
-import { getAuth, signOut } from 'firebase/auth';
+import { Auth, signOut } from 'firebase/auth';
 import { Button, ButtonProps } from '@mui/material';
 
 import { devlog } from '../utils/logger';
 
-const auth = getAuth();
+interface SignOutButtonProps extends ButtonProps {
+  auth: Auth;
+}
 
-const SignOutButton = React.memo((props: ButtonProps) => {
-  const handleClick = () => {
-    signOut(auth)
-      .then(() => {
-        devlog('Signed out');
-      })
-      .catch((err) => {
-        devlog('Signout Error', err);
-      });
-  };
+const SignOutButton = React.memo(
+  ({ auth, ...buttonProps }: SignOutButtonProps) => {
+    const handleClick = () => {
+      signOut(auth)
+        .then(() => {
+          devlog('Signed out');
+        })
+        .catch((err) => {
+          devlog('Signout Error', err);
+        });
+    };
 
-  return (
-    <>
-      <Button {...props} onClick={handleClick}>
-        Sign Out
-      </Button>
-    </>
-  );
-});
+    return (
+      <>
+        <Button {...buttonProps} onClick={handleClick}>
+          Sign Out
+        </Button>
+      </>
+    );
+  }
+);
 
 export default SignOutButton;
