@@ -3,6 +3,6 @@ export const devlog = (message?: any, ...optionalParams: any[]): void => {
   if (optionalParams.length === 0) {
     console.log(message);
   } else {
-    console.log(message, optionalParams);
+    console.log(message, ...optionalParams);
   }
 };

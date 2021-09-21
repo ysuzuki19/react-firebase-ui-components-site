@@ -5,6 +5,8 @@ import {
   onAuthStateChanged,
   signInWithPopup,
   UserCredential,
+  browserLocalPersistence,
+  setPersistence,
 } from 'firebase/auth';
 
 // Download from https://developers.google.com/identity/branding-guidelines
@@ -62,11 +64,13 @@ const GoogleSignInButton = React.memo(
 
       setImage(googlesignin_pressed);
 
-      signInWithPopup(auth, provider)
-        .then((result) => postSignIn(result))
-        .catch((err) => {
-          devlog('SignIn Error: ', err);
-        });
+      setPersistence(auth, browserLocalPersistence).then(() => {
+        signInWithPopup(auth, provider)
+          .then((result) => postSignIn(result))
+          .catch((err) => {
+            devlog('SignIn Error: ', err);
+          });
+      });
     };
 
     return (
