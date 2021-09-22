@@ -7,10 +7,10 @@ import {
   UserCredential,
 } from '@firebase/auth';
 
-import { firebase_app } from './utils/firebase_app';
 import GoogleSignInButton from './components/GoogleSignInButton';
 import SignOutButton from './components/SignOutButton';
 import WithAuth from './components/WithAuth';
+import { firebase_app } from './utils/firebase_app';
 import { devlog } from './utils/logger';
 
 const analytics = getAnalytics(firebase_app);
