@@ -19,7 +19,7 @@ const AuthScreen = (): JSX.Element => {
       alignItems="center"
       style={{ minHeight: '100vh' }}
     >
-      <Grid item xs={3}>
+      <Grid item>
         <AppBar position="relative" elevation={0}>
           <Toolbar>
             <Typography variant="h4">Sign In</Typography>
