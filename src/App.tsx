@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getAnalytics, logEvent } from 'firebase/analytics';
-import {
-  getAuth,
-  GoogleAuthProvider,
-  onAuthStateChanged,
-  UserCredential,
-} from '@firebase/auth';
+import { getAuth, onAuthStateChanged } from '@firebase/auth';
 
-import GoogleSignInButton from './components/GoogleSignInButton';
 import SignOutButton from './components/SignOutButton';
 import WithAuth from './components/WithAuth';
 import { firebase_app } from './utils/firebase_app';
@@ -39,37 +33,13 @@ const App = (): JSX.Element => {
     return unsubscribe;
   }, []);
 
-  const handlePreSignIn = () => {
-    devlog('pre');
-    // return true;
-  };
-
-  const handlePostSignIn = (result: UserCredential) => {
-    devlog('post');
-
-    const credential = GoogleAuthProvider.credentialFromResult(result);
-    const token = credential?.accessToken;
-    const user = result.user;
-    devlog(result);
-    devlog('Credential', credential);
-    devlog('Token', token);
-    devlog('User', user);
-  };
-
   return (
     <WithAuth auth={auth}>
       <h1>React Firebase ui-components site</h1>
       <div>
         name: <span>{uname}</span>
       </div>
-      {uname?.length !== 0 ? (
-        <SignOutButton auth={auth} variant="contained" />
-      ) : (
-        <GoogleSignInButton
-          preSignIn={handlePreSignIn}
-          postSignIn={handlePostSignIn}
-        />
-      )}
+      <SignOutButton auth={auth} variant="contained" />
     </WithAuth>
   );
 };
